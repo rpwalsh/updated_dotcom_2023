@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Falling Through Clouds</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script>
+      // Set up the scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Add the clouds
+      const cloudGeometry = new THREE.SphereGeometry(200, 32, 32);
+      const cloudMaterial = new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/clouds.jpg'),
+        side: THREE.DoubleSide,
+        opacity: 0.8,
+        transparent: true
+      });
+      const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+      scene.add(clouds);
+
+      // Add the camera controls
+      const controls = new THREE.PointerLockControls(camera, renderer.domElement);
+      scene.add(controls.getObject());
+
+      // Add the floor
+      const floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+      const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+      scene.add(floor);
+
+      // Animate the scene
+      const animate = function () {
+        requestAnimationFrame(animate);
+
+        // Update the controls
+        controls.update();
+
+        // Render the scene
+        renderer.render(scene, camera);
+      };
+
+      // Start the animation loop
+      animate();
+
+      // Lock the pointer on click
+      document.addEventListener('click', function () {
+        controls.lock();
+      });
+    </script>
+  </body>
+</html>
